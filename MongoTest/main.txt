@@ -1,0 +1,40 @@
+package sample;
+
+import com.mongodb.Mongo;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSInputFile;
+import com.mongodb.BasicDBObject;
+
+import java.net.UnknownHostException;
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+
+    }
+
+    public static void main( String args[] ) {
+
+        Mongo client = null;
+        try {
+            client = new Mongo();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        assert client != null;
+        GridFS gridFS = new GridFS(client.getDB("test"));
+        GridFSInputFile in = gridFS.createFile("Kill Bill");
+        in.put("meta", 10);  // insert extra metadata here
+        in.getOutputStream();
+        GridFSDBFile out = gridFS.findOne( new BasicDBObject( "_id" , in.getId() ) );
+        System.out.println(out);
+    }
+}
+
+
+
+
